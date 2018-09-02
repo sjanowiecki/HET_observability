@@ -4,22 +4,30 @@
 #   re-named "HET_obs" to simplify
 import numpy as np
 
-
-#  exec(open("./HET_obs.py").read())
-
-
-#which trimester? year and number
+#####----change this if needed----#####
+#
+#trimester year and number
 c_y = 2019
 c_t = 1
+#
+#####----------------------------#####
 
-#include weather/PR/eng time losses?
+
+
+
+
+
+#include weather/PR/eng time losses? should be True
 include_losses = True
 
 #targets file with headers: ID, RA, Dec, exptime, Nvisits (etc ok):
-targf = 'PI_targets.dat'
+targf = 'PI_targets.dat' #change if needed
 
-setup_time = 300 #seconds. assumption.
+setup_time = 300 #assume 300 seconds. 
 
+
+
+#  exec(open("./HET_obs.py").read())
 
 
 
@@ -61,35 +69,23 @@ else:
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-#from math import pi
-import scipy
-import os
-import itertools
 
-from astropy.io import ascii
 import astropy
+from astropy.io import ascii
 from astropy import units as u
-from astropy.table import Table, Column, MaskedColumn
 
-from astropy.io import fits as pyfits
-import os.path
 
 from matplotlib import pyplot as plt
 
-import matplotlib.colorbar as cbar
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
 plt.register_cmap(name='viridis', cmap=plt.cm.viridis)
-from matplotlib.colors import LinearSegmentedColormap
 
 from matplotlib import rc
 rc('font',**{'family':'serif','serif':['Computer Modern Roman']})
 rc('text', usetex=True)
 
-import subprocess
 
-import datetime
-from datetime import timedelta, date
 
 
 
