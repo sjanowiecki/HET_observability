@@ -11,6 +11,7 @@ c_y = 2019
 c_t = 1
 #
 #####----------------------------#####
+#NOTE: only works for 2019-1 right now, with HETDEX data included.
 
 
 
@@ -19,6 +20,9 @@ c_t = 1
 
 #include weather/PR/eng time losses? should be True
 include_losses = True
+
+#include allocations to HETDEX fields? recommended.
+include_HETDEX = True
 
 #targets file with headers: ID, RA, Dec, exptime, Nvisits (etc ok):
 targf = 'PI_targets.dat' #change if needed
@@ -51,10 +55,10 @@ f_time_good = ( (1.0-f_weather_lost) * (1.0-f_pr_lost) )
 #set alias/wrap-around point based on trimester
 if (c_t==1):
     #hwrap = +18.0 #NOT USED
-    offs= 6#-8 #limit offsets
+    offs= 20#-8 #limit offsets
 elif (c_t==2):
     ##hwrap = +8.0 #i.e., values below 8 get +24. lims shift by hwrap
-    offs=-2#+8 #limit offsets
+    offs=+2#+8 #limit offsets
 elif (c_t==3):
     ##hwrap = 12.0 #NOT USED
     offs=+12 #0 #limits/save_LST offsets
@@ -91,7 +95,8 @@ rc('text', usetex=True)
 
 
 def dolab1(fig):#:,thisplot):
-        thisplot = fig.add_axes([0.865,0.05,0.05,0.05],visible=True)
+        #18, far over!
+        thisplot = fig.add_axes([0.808,0.05,0.05,0.05],visible=True)
         thisplot.spines['bottom'].set_color('white')
         thisplot.spines['top'].set_color('white')
         thisplot.spines['left'].set_color('white')
@@ -100,10 +105,32 @@ def dolab1(fig):#:,thisplot):
         thisplot.yaxis.set_visible(False)
         thisplot.set_zorder(500)
         thisplot.fill('white')
-        thisplot.text(-0.03,0.0,'6',fontsize=17)
+        thisplot.text(-0.045,-0.015,'18',fontsize=17)
+        #12, near middle!
+        thisplot = fig.add_axes([0.623,0.05,0.05,0.05],visible=True)
+        thisplot.spines['bottom'].set_color('white')
+        thisplot.spines['top'].set_color('white')
+        thisplot.spines['left'].set_color('white')
+        thisplot.spines['right'].set_color('white')
+        thisplot.xaxis.set_visible(False)
+        thisplot.yaxis.set_visible(False)
+        thisplot.set_zorder(500)
+        thisplot.fill('white')
+        thisplot.text(-0.045,-0.015,'12',fontsize=17)
+        #6, at left
+        thisplot = fig.add_axes([0.442,0.05,0.05,0.05],visible=True)
+        thisplot.spines['bottom'].set_color('white')
+        thisplot.spines['top'].set_color('white')
+        thisplot.spines['left'].set_color('white')
+        thisplot.spines['right'].set_color('white')
+        thisplot.xaxis.set_visible(False)
+        thisplot.yaxis.set_visible(False)
+        thisplot.set_zorder(500)
+        thisplot.fill('white')
+        thisplot.text(-0.045,-0.015,'6',fontsize=17)
         return fig#,thisplot
 
-def dolab2(fig): #not needed
+def dolab2(fig):
         a=0
         if (False):
             thisplot = fig.add_axes([0.80,0.05,0.05,0.05],visible=True)
@@ -151,7 +178,7 @@ def dolab3(fig):
 #def map_targets(targf,savedat):  #actually, no function now
 #first, unpack saved data:
 #read file, based on c_t and c_y
-fin = 'data/allvisits_byLST_'+str(c_y)+'-'+str(c_t)+'.dat'
+fin = 'data/allvisits_byLST_wHETDEX_'+str(c_y)+'-'+str(c_t)+'.dat'
 fdat = ascii.read(fin)
 
 
@@ -160,6 +187,14 @@ save_visits_all = fdat['all'].data
 save_visits_br = fdat['br'].data
 save_visits_grey = fdat['grey'].data
 save_visits_dark = fdat['dark'].data
+save_visits_HETDEX = fdat['visits_HETDEX'].data
+
+#SUBTRACT HETDEX from dark and ALL
+#   only subtract as much from the "all" time as there is "dark" time.
+how_much_to_lose = np.array([hd if (hd<dt) else dt if (hd>dt) else 0 for hd,dt in zip(save_visits_HETDEX,save_visits_dark)])
+if (include_HETDEX):
+    save_visits_all -= how_much_to_lose
+    save_visits_dark -= how_much_to_lose
 
 #calculate LST step size from data
 dall = save_LST[1:] -save_LST[0:-1] 
@@ -305,24 +340,24 @@ print(' ')
 #fix up rounding issues/etc. depends on trimester.
 #print('checking')
 if (c_t==1):
-        #for trimester 1, we allow negative up to -6, and take any >18 to there
-        tmp = np.array([-99 if (l==-99) else l if (l>6) else l+24.0 for l in LST1_start])
+        #for trimester 1, 
+        tmp = np.array([-99 if (l==-99) else l if (l>22) else l+24.0 for l in LST1_start])
         LST1_start = tmp
-        tmp = np.array([-99 if (l==-99) else l if (l>6) else l+24.0 for l in LST1_stop])
+        tmp = np.array([-99 if (l==-99) else l if (l>22) else l+24.0 for l in LST1_stop])
         LST1_stop = tmp
-        tmp = np.array([-99 if (l==-99) else l if (l>6) else l+24.0 for l in LST2_start])
+        tmp = np.array([-99 if (l==-99) else l if (l>22) else l+24.0 for l in LST2_start])
         LST2_start = tmp
-        tmp = np.array([-99 if (l==-99) else l if (l>6) else l+24.0 for l in LST2_stop])
+        tmp = np.array([-99 if (l==-99) else l if (l>22) else l+24.0 for l in LST2_stop])
         LST2_stop = tmp
 if (c_t==2):
         #for trimester 2, we keep 0-24  ####OLD: allow up to 32h, and take negatives +24
-        tmp = np.array([-99 if (l==-99) else l if ((l>=-2)&(l<=22)) else l-24.0 if (l>22) else l+24.0 for l in LST1_start])
+        tmp = np.array([-99 if (l==-99) else l if ((l>=2)&(l<=25)) else l-24.0 if (l>25) else l+24.0 for l in LST1_start])
         LST1_start = tmp
-        tmp = np.array([-99 if (l==-99) else l if ((l>=-2)&(l<=22)) else l-24.0 if (l>22) else l+24.0 for l in LST1_stop])
+        tmp = np.array([-99 if (l==-99) else l if ((l>=2)&(l<=25)) else l-24.0 if (l>25) else l+24.0 for l in LST1_stop])
         LST1_stop = tmp
-        tmp = np.array([-99 if (l==-99) else l if ((l>=-2)&(l<=22)) else l-24.0 if (l>22) else l+24.0 for l in LST2_start])
+        tmp = np.array([-99 if (l==-99) else l if ((l>=2)&(l<=25)) else l-24.0 if (l>25) else l+24.0 for l in LST2_start])
         LST2_start = tmp
-        tmp = np.array([-99 if (l==-99) else l if ((l>=-2)&(l<=22)) else l-24.0 if (l>22) else l+24.0 for l in LST2_stop])
+        tmp = np.array([-99 if (l==-99) else l if ((l>=2)&(l<=25)) else l-24.0 if (l>25) else l+24.0 for l in LST2_stop])
         LST2_stop = tmp
 if (c_t==3):
         #for trimester 3, less than 12, send up to >24
@@ -370,17 +405,17 @@ a.plot(save_LST, save_visits_dark,color='black',lw=1)
 a.plot(save_LST, save_visits_grey+save_visits_dark,color='grey',lw=2)
 
 a.set_xlabel(r'LST [h]', fontname='Arial', fontsize=22, fontweight='normal')
-a.set_ylabel(r'N visits', fontname='Arial', fontsize=22, fontweight='normal')
+a.set_ylabel(r'N visits (including weather/etc)', fontname='Arial', fontsize=22, fontweight='normal')
     
 #fix manually in two cases:
 if (c_t==1): dolab1(fig)
-#if (c_t==2): dolab2(fig) #none needed
+if (c_t==2): dolab2(fig) #none needed
 if (c_t==3): dolab3(fig)
 
-#if (include_losses):
-#        a.text(11.5+offs,64,'with average weather/problem reductions',fontsize=15)
-#else:
-#        a.text(11.5+offs,64,'with no weather/problem reductions',fontsize=15)
+if (include_HETDEX):
+        a.text(15.5+offs,64,'subtracting HETDEX allocations',fontsize=15)
+else:
+        a.text(15.5+offs,64,'not including HETDEX fields',fontsize=15)
 
 
 #add ranges of target tracks:
@@ -420,11 +455,19 @@ a.text(9+offs,71,str(c_y)+'-'+str(c_t), color='black', fontname='Arial', fontsiz
 
 
 #labels:
-a.text(0+offs,68,'Single tracks (N/S)',color='blue', fontname='Arial', fontsize=17, fontweight='bold',alpha=0.8)
-a.text(0+offs,64,'East tracks',color='red', fontname='Arial', fontsize=17, fontweight='normal',alpha=0.4)
-a.text(0+offs,60,'West tracks',color='green', fontname='Arial', fontsize=17, fontweight='normal',alpha=0.4)
-    
-    
+a.text(0+offs,64.5,'Single tracks (N/S)',color='blue', fontname='Arial', fontsize=19, fontweight='bold',alpha=0.8)
+a.text(0+offs,60.5,'West tracks',color='red', fontname='Arial', fontsize=19, fontweight='normal',alpha=0.4)
+a.text(0+offs,56.5,'East tracks',color='green', fontname='Arial', fontsize=19, fontweight='normal',alpha=0.4)
+#note names are off.... but ok.
+
+a.text(0.7+offs,47.5,'All (bright+grey+dark)',fontsize=15)
+a.text(0.7+offs,44.0,'Grey',fontsize=15)
+a.text(0.7+offs,40.5,'Dark',fontsize=15)
+
+a.plot([0+offs,0.5+offs],[48.5,48.5],color='black',lw=3)
+a.plot([0+offs,0.5+offs],[45.0,45.0],color='grey',lw=2)
+a.plot([0+offs,0.5+offs],[41.5,41.5],color='black',lw=1)
+
 #horizontal lines
 llines = np.array([10,20,30,40,50,60,70])
 for l in llines:
