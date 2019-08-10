@@ -142,7 +142,7 @@ def dolab2(fig):
             thisplot.xaxis.set_visible(False)
             thisplot.yaxis.set_visible(False)
             thisplot.set_zorder(500)
-            thisplot.fill('grey')
+            #thisplot.fill('grey')
             thisplot.set_alpha(0.5)
             thisplot.text(-0.02,0.0,'6',fontsize=17)
         return fig#thisplot
@@ -156,7 +156,7 @@ def dolab3(fig):
         thisplot.xaxis.set_visible(False)
         thisplot.yaxis.set_visible(False)
         thisplot.set_zorder(500)
-        thisplot.fill('grey')
+        #thisplot.fill('grey')
         thisplot.set_alpha(0.5)
         thisplot.text(-0.02,0.0,'6',fontsize=15)
 
@@ -168,7 +168,7 @@ def dolab3(fig):
         thisplot2.xaxis.set_visible(False)
         thisplot2.yaxis.set_visible(False)
         thisplot2.set_zorder(500)
-        thisplot2.fill('grey')
+        #thisplot2.fill('grey')
         thisplot2.set_alpha(0.5)
         thisplot2.text(-0.02,0.0,'12',fontsize=15)
         return fig#,thisplot
@@ -186,7 +186,7 @@ fdat = ascii.read(fin)
 save_LST = fdat['LST'].data
 save_visits_all = fdat['all'].data
 save_visits_br = fdat['br'].data
-save_visits_grey = fdat['grey'].data
+save_visits_grey = fdat['gray'].data #new name change
 save_visits_dark = fdat['dark'].data
 save_visits_HETDEX = fdat['visits_HETDEX'].data
 
