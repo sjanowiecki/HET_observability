@@ -361,14 +361,14 @@ if (c_t==2):
         tmp = np.array([-99 if (l==-99) else l if ((l>=2)&(l<=25)) else l-24.0 if (l>25) else l+24.0 for l in LST2_stop])
         LST2_stop = tmp
 if (c_t==3):
-        #for trimester 3, less than 12, send up to >24
-        tmp = np.array([-99 if (l==-99) else l if ((l>12)&(l<24)) else l+24.0 if (l<12) else l-24.0 for l in LST1_start])
+        #for trimester 3, less than 12, send up to >24    #to 36 now
+        tmp = np.array([-99 if (l==-99) else l if ((l>12)&(l<36)) else l+24.0 if (l<12) else l-24.0 for l in LST1_start])
         LST1_start = tmp
-        tmp = np.array([-99 if (l==-99) else l if ((l>12)&(l<24)) else l+24.0 if (l<12) else l-24.0 for l in LST1_stop])
+        tmp = np.array([-99 if (l==-99) else l if ((l>12)&(l<36)) else l+24.0 if (l<12) else l-24.0 for l in LST1_stop])
         LST1_stop = tmp
-        tmp = np.array([-99 if (l==-99) else l if ((l>12)&(l<24)) else l+24.0 if (l<12) else l-24.0 for l in LST2_start])
+        tmp = np.array([-99 if (l==-99) else l if ((l>12)&(l<36)) else l+24.0 if (l<12) else l-24.0 for l in LST2_start])
         LST2_start = tmp
-        tmp = np.array([-99 if (l==-99) else l if ((l>12)&(l<24)) else l+24.0 if (l<12) else l-24.0 for l in LST2_stop])
+        tmp = np.array([-99 if (l==-99) else l if ((l>12)&(l<36)) else l+24.0 if (l<12) else l-24.0 for l in LST2_stop])
         LST2_stop = tmp
     
     
