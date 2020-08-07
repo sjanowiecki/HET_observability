@@ -8,11 +8,12 @@ import numpy as np
 #
 #trimester year and number
 c_y = 2020
-c_t = 1
+c_t = 3
 #
 #####----------------------------#####
-#NOTE: works for 2019-[1,2,3] and 2020-1 right now
+#NOTE: works for [2019,2020]-[1,2,3] right now
 #    HETDEX data included for these trimesters only
+
 
 
 
